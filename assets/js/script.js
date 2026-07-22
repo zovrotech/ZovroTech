@@ -681,3 +681,5 @@ window.addEventListener("load",()=>{
 console.log("Website Loaded Successfully 🚀");
 
 });
+// Close DOMContentLoaded
+});
