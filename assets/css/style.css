@@ -389,20 +389,7 @@ box-shadow:0 10px 30px rgba(0,0,0,.06);
 /* Left side dark, right side transparent */
 
 .hero::after{
-    content:"";
-    position:absolute;
-    inset:0;
-
-    background:linear-gradient(
-        90deg,
-        rgba(8,12,25,.82) 0%,
-        rgba(8,12,25,.55) 28%,
-        rgba(8,12,25,.20) 55%,
-        rgba(8,12,25,.05) 75%,
-        rgba(8,12,25,0) 100%
-    );
-
-    z-index:1;
+    display:none;
 }
 
 /* Hero Content */
