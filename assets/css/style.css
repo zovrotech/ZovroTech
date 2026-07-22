@@ -401,12 +401,14 @@ box-shadow:0 10px 30px rgba(0,0,0,.06);
     position:absolute;
     inset:0;
 
-    background:linear-gradient(
+    background:
+    linear-gradient(
         90deg,
         rgba(5,9,20,.98) 0%,
-        rgba(5,9,20,.90) 35%,
-        rgba(5,9,20,.55) 60%,
-        rgba(5,9,20,.15) 100%
+        rgba(5,9,20,.96) 25%,
+        rgba(5,9,20,.90) 45%,
+        rgba(5,9,20,.65) 65%,
+        rgba(5,9,20,.30) 100%
     );
 
     z-index:1;
