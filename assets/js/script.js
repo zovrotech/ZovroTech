@@ -1,60 +1,115 @@
-/* ===========================
+/* =====================================================
    ZOVRO TECH
    MAIN JAVASCRIPT
-=========================== */
+   PART 1
+===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* ===========================
-       LOADER
-    =========================== */
+    /* ==========================================
+       SELECTORS
+    ========================================== */
 
-    const loader = document.querySelector(".loader");
+    const header = document.querySelector("header");
+    const menuBtn = document.querySelector(".menu-btn");
+    const navLinks = document.querySelector(".nav-links");
+    const loader = document.getElementById("loader");
+
+    /* ==========================================
+       PAGE LOADER
+    ========================================== */
 
     window.addEventListener("load", () => {
 
-        setTimeout(() => {
+        if (loader) {
 
-            loader.classList.add("hide");
+            setTimeout(() => {
 
-        }, 800);
+                loader.classList.add("hide");
+
+            }, 800);
+
+        }
 
     });
 
-    /* ===========================
+    /* ==========================================
        MOBILE MENU
-    =========================== */
+    ========================================== */
 
-    const menuBtn = document.querySelector(".menu-btn");
-    const navLinks = document.querySelector(".nav-links");
+    if (menuBtn && navLinks) {
 
-    if(menuBtn){
-
-        menuBtn.addEventListener("click", () =>{
+        menuBtn.addEventListener("click", () => {
 
             navLinks.classList.toggle("active");
+            menuBtn.classList.toggle("active");
 
         });
 
     }
 
-    /* ===========================
+    /* ==========================================
+       CLOSE MENU WHEN CLICK OUTSIDE
+    ========================================== */
+
+    document.addEventListener("click", (e) => {
+
+        if (
+            navLinks &&
+            menuBtn &&
+            !navLinks.contains(e.target) &&
+            !menuBtn.contains(e.target)
+        ) {
+
+            navLinks.classList.remove("active");
+            menuBtn.classList.remove("active");
+
+        }
+
+    });
+
+    /* ==========================================
+       STICKY NAVBAR
+    ========================================== */
+
+    function stickyNavbar() {
+
+        if (!header) return;
+
+        if (window.scrollY > 80) {
+
+            header.classList.add("sticky");
+
+        } else {
+
+            header.classList.remove("sticky");
+
+        }
+
+    }
+
+    stickyNavbar();
+
+    window.addEventListener("scroll", stickyNavbar);
+
+                              /* ==========================================
        SMOOTH SCROLL
-    =========================== */
+    ========================================== */
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
 
-        anchor.addEventListener("click",function(e){
+        link.addEventListener("click", function (e) {
 
-            e.preventDefault();
+            const target = document.querySelector(this.getAttribute("href"));
 
-            const target=document.querySelector(this.getAttribute("href"));
+            if (target) {
 
-            if(target){
+                e.preventDefault();
 
                 target.scrollIntoView({
 
-                    behavior:"smooth"
+                    behavior: "smooth",
+                    block: "start"
 
                 });
 
@@ -64,57 +119,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    /* ===========================
-       STICKY NAVBAR
-    =========================== */
+    /* ==========================================
+       CLOSE MOBILE MENU AFTER CLICK
+    ========================================== */
 
-    const header=document.querySelector("header");
+    document.querySelectorAll(".nav-links a").forEach(link => {
 
-    window.addEventListener("scroll",()=>{
+        link.addEventListener("click", () => {
 
-        if(window.scrollY>50){
+            if (navLinks && menuBtn) {
 
-            header.style.background="rgba(8,17,31,.97)";
-            header.style.boxShadow="0 10px 30px rgba(0,0,0,.25)";
-
-        }else{
-
-            header.style.background="rgba(8,17,31,.90)";
-            header.style.boxShadow="none";
-
-        }
-
-    });
-
-    /* ===========================
-       SCROLL TOP BUTTON
-    =========================== */
-
-    const scrollBtn=document.querySelector(".scroll-top");
-
-    if(scrollBtn){
-
-        window.addEventListener("scroll",()=>{
-
-            if(window.scrollY>400){
-
-                scrollBtn.classList.add("active");
-
-            }else{
-
-                scrollBtn.classList.remove("active");
+                navLinks.classList.remove("active");
+                menuBtn.classList.remove("active");
 
             }
 
         });
 
-        scrollBtn.addEventListener("click",()=>{
+    });
+
+    /* ==========================================
+       SCROLL TO TOP BUTTON
+    ========================================== */
+
+    const topBtn = document.getElementById("topBtn");
+
+    function toggleTopButton() {
+
+        if (!topBtn) return;
+
+        if (window.scrollY > 400) {
+
+            topBtn.classList.add("show");
+
+        } else {
+
+            topBtn.classList.remove("show");
+
+        }
+
+    }
+
+    toggleTopButton();
+
+    window.addEventListener("scroll", toggleTopButton);
+
+    if (topBtn) {
+
+        topBtn.addEventListener("click", () => {
 
             window.scrollTo({
 
-                top:0,
-
-                behavior:"smooth"
+                top: 0,
+                behavior: "smooth"
 
             });
 
@@ -122,263 +179,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-});
-/* ===========================
-   FAQ TOGGLE
-=========================== */
+    /* ==========================================
+       ACTIVE NAVIGATION
+    ========================================== */
 
-const faqItems = document.querySelectorAll(".faq-item");
+    const sections = document.querySelectorAll("section");
+    const navItems = document.querySelectorAll(".nav-links a");
 
-faqItems.forEach(item => {
+    function activeNavigation() {
 
-    const question = item.querySelector(".faq-question");
-    const answer = item.querySelector(".faq-answer");
+        let current = "";
 
-    question.addEventListener("click", () => {
+        sections.forEach(section => {
 
-        faqItems.forEach(f => {
+            const sectionTop = section.offsetTop - 120;
+            const sectionHeight = section.offsetHeight;
 
-            if(f !== item){
+            if (
+                window.scrollY >= sectionTop &&
+                window.scrollY < sectionTop + sectionHeight
+            ) {
 
-                f.querySelector(".faq-answer").style.display = "none";
+                current = section.getAttribute("id");
 
             }
 
         });
 
-        if(answer.style.display === "block"){
+        navItems.forEach(link => {
 
-            answer.style.display = "none";
+            link.classList.remove("active");
 
-        }else{
+            if (link.getAttribute("href") === "#" + current) {
 
-            answer.style.display = "block";
+                link.classList.add("active");
 
-        }
+            }
 
-    });
-
-});
-
-/* ===========================
-   SCROLL ANIMATION
-=========================== */
-
-const fadeElements = document.querySelectorAll(".fade-up");
-
-function revealElements(){
-
-    fadeElements.forEach(el => {
-
-        const top = el.getBoundingClientRect().top;
-
-        if(top < window.innerHeight - 100){
-
-            el.classList.add("show");
-
-        }
-
-    });
-
-}
-
-window.addEventListener("scroll", revealElements);
-window.addEventListener("load", revealElements);
-
-/* ===========================
-   ACTIVE NAVBAR LINK
-=========================== */
-
-const sections = document.querySelectorAll("section");
-const navLinksAll = document.querySelectorAll(".nav-links a");
-
-window.addEventListener("scroll", () => {
-
-    let current = "";
-
-    sections.forEach(section => {
-
-        const sectionTop = section.offsetTop - 120;
-
-        if(pageYOffset >= sectionTop){
-
-            current = section.getAttribute("id");
-
-        }
-
-    });
-
-    navLinksAll.forEach(link => {
-
-        link.classList.remove("active");
-
-        if(link.getAttribute("href") === "#" + current){
-
-            link.classList.add("active");
-
-        }
-
-    });
-
-});
-
-/* ===========================
-   NUMBER COUNTER
-=========================== */
-
-const counters = document.querySelectorAll(".counter");
-
-counters.forEach(counter => {
-
-    counter.innerText = "0";
-
-    const updateCounter = () => {
-
-        const target = +counter.getAttribute("data-target");
-
-        const count = +counter.innerText;
-
-        const increment = target / 100;
-
-        if(count < target){
-
-            counter.innerText = Math.ceil(count + increment);
-
-            setTimeout(updateCounter,20);
-
-        }else{
-
-            counter.innerText = target;
-
-        }
+        });
 
     }
 
-    updateCounter();
+    activeNavigation();
 
-});
+    window.addEventListener("scroll", activeNavigation);
+       /* ==========================================
+       FAQ ACCORDION
+    ========================================== */
 
-/* ===========================
-   TYPING EFFECT
-=========================== */
+    const faqItems = document.querySelectorAll(".faq-item");
 
-const typing = document.querySelector(".typing");
+    faqItems.forEach(item => {
 
-if(typing){
+        const question = item.querySelector(".faq-question");
 
-const words = [
+        question.addEventListener("click", () => {
 
-"Website Development",
+            const isActive = item.classList.contains("active");
 
-"Meta Ads",
+            faqItems.forEach(faq => {
 
-"Google Ads",
+                faq.classList.remove("active");
 
-"SEO",
+            });
 
-"AI Automation"
+            if (!isActive) {
 
-];
-
-let wordIndex = 0;
-let charIndex = 0;
-let deleting = false;
-
-function typeEffect(){
-
-let currentWord = words[wordIndex];
-
-if(!deleting){
-
-typing.textContent = currentWord.substring(0,charIndex++);
-
-if(charIndex > currentWord.length){
-
-deleting = true;
-
-setTimeout(typeEffect,1500);
-
-return;
-
-}
-
-}else{
-
-typing.textContent = currentWord.substring(0,charIndex--);
-
-if(charIndex < 0){
-
-deleting = false;
-
-wordIndex = (wordIndex + 1) % words.length;
-
-}
-
-}
-
-setTimeout(typeEffect,deleting ? 50 : 100);
-
-}
-
-typeEffect();
-
-}
-/* ===========================
-   TESTIMONIAL AUTO SLIDER
-=========================== */
-
-const testimonialContainer = document.querySelector(".testimonial-grid");
-
-if(testimonialContainer){
-
-    let scrollValue = 0;
-
-    setInterval(()=>{
-
-        scrollValue += 350;
-
-        if(scrollValue >= testimonialContainer.scrollWidth){
-
-            scrollValue = 0;
-        }
-
-        testimonialContainer.scrollTo({
-
-            left:scrollValue,
-            behavior:"smooth"
-
-        });
-
-    },4000);
-
-}
-
-/* ===========================
-   PORTFOLIO FILTER
-=========================== */
-
-const filterButtons = document.querySelectorAll(".filter-btn");
-const projects = document.querySelectorAll(".project");
-
-filterButtons.forEach(button=>{
-
-    button.addEventListener("click",()=>{
-
-        const filter = button.dataset.filter;
-
-        filterButtons.forEach(btn=>btn.classList.remove("active"));
-
-        button.classList.add("active");
-
-        projects.forEach(project=>{
-
-            if(filter==="all" || project.dataset.category===filter){
-
-                project.style.display="block";
-
-            }else{
-
-                project.style.display="none";
+                item.classList.add("active");
 
             }
 
@@ -386,300 +253,760 @@ filterButtons.forEach(button=>{
 
     });
 
-});
+    /* ==========================================
+       SCROLL REVEAL ANIMATION
+    ========================================== */
 
-/* ===========================
-   CONTACT FORM VALIDATION
-=========================== */
+    const revealElements = document.querySelectorAll(".fade-up");
 
-const contactForm=document.querySelector(".contact-form");
+    const revealObserver = new IntersectionObserver((entries) => {
 
-if(contactForm){
+        entries.forEach(entry => {
 
-contactForm.addEventListener("submit",(e)=>{
+            if (entry.isIntersecting) {
 
-e.preventDefault();
+                entry.target.classList.add("show");
 
-const name=contactForm.querySelector("input[name='name']");
-const email=contactForm.querySelector("input[name='email']");
-const message=contactForm.querySelector("textarea");
+                revealObserver.unobserve(entry.target);
 
-if(name.value.trim()===""){
+            }
 
-alert("Please enter your name.");
-name.focus();
-return;
+        });
 
-}
+    }, {
 
-if(email.value.trim()===""){
+        threshold: 0.15
 
-alert("Please enter your email.");
-email.focus();
-return;
+    });
 
-}
+    revealElements.forEach(element => {
 
-if(message.value.trim()===""){
+        revealObserver.observe(element);
 
-alert("Please enter your message.");
-message.focus();
-return;
+    });
 
-}
+    /* ==========================================
+       STAGGER ANIMATION
+    ========================================== */
 
-alert("Thank you! Your message has been sent.");
+    revealElements.forEach((element, index) => {
 
-contactForm.reset();
+        element.style.transitionDelay = `${index * 0.1}s`;
 
-});
+    });
 
-}
+    /* ==========================================
+       HERO PARALLAX EFFECT
+    ========================================== */
 
-/* ===========================
-   CLOSE MOBILE MENU
-=========================== */
+    const heroImage = document.querySelector(".hero-image");
 
-document.querySelectorAll(".nav-links a").forEach(link=>{
+    window.addEventListener("scroll", () => {
 
-link.addEventListener("click",()=>{
+        if (!heroImage) return;
 
-if(navLinks){
+        const offset = window.pageYOffset;
 
-navLinks.classList.remove("active");
+        heroImage.style.transform =
+            `translateY(${offset * 0.15}px)`;
 
-}
+    });
 
-});
+    /* ==========================================
+       SERVICE CARD HOVER EFFECT
+    ========================================== */
 
-});
+    const cards = document.querySelectorAll(".card");
 
-/* ===========================
-   RIPPLE BUTTON EFFECT
-=========================== */
+    cards.forEach(card => {
 
-document.querySelectorAll(".btn1,.btn2").forEach(button=>{
+        card.addEventListener("mousemove", (e) => {
 
-button.addEventListener("click",function(e){
+            const rect = card.getBoundingClientRect();
 
-const ripple=document.createElement("span");
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
 
-const rect=this.getBoundingClientRect();
+            card.style.setProperty("--x", `${x}px`);
+            card.style.setProperty("--y", `${y}px`);
 
-const size=Math.max(rect.width,rect.height);
+        });
 
-ripple.style.width=size+"px";
-ripple.style.height=size+"px";
-ripple.style.left=(e.clientX-rect.left-size/2)+"px";
-ripple.style.top=(e.clientY-rect.top-size/2)+"px";
+    });
 
-ripple.className="ripple";
+    /* ==========================================
+       SECTION TITLE ANIMATION
+    ========================================== */
 
-this.appendChild(ripple);
+    const titles = document.querySelectorAll(".section-title");
 
-setTimeout(()=>{
+    const titleObserver = new IntersectionObserver((entries) => {
 
-ripple.remove();
+        entries.forEach(entry => {
 
-},600);
+            if (entry.isIntersecting) {
 
-});
+                entry.target.classList.add("visible");
 
-});
+                titleObserver.unobserve(entry.target);
 
-/* ===========================
-   CURRENT YEAR
-=========================== */
+            }
 
-const year=document.querySelector(".year");
+        });
 
-if(year){
+    }, {
 
-year.textContent=new Date().getFullYear();
+        threshold: 0.2
 
-}
+    });
 
-/* ===========================
-   END
-=========================== */
+    titles.forEach(title => {
 
-console.log("✅ ZOVRO TECH Website Loaded Successfully");
-/* ===========================
-   SCROLL PROGRESS BAR
-=========================== */
+        titleObserver.observe(title);
 
-const progressBar = document.querySelector(".progress-bar");
+    });
+       /* ==========================================
+       COUNTER ANIMATION
+    ========================================== */
 
-window.addEventListener("scroll", () => {
+    const counters = document.querySelectorAll(".counter");
 
-    if(progressBar){
+    const counterObserver = new IntersectionObserver((entries) => {
 
-        const totalHeight =
-        document.documentElement.scrollHeight -
-        window.innerHeight;
+        entries.forEach(entry => {
+
+            if (!entry.isIntersecting) return;
+
+            const counter = entry.target;
+            const target = parseInt(counter.dataset.target) || 0;
+
+            let current = 0;
+            const duration = 2000;
+            const increment = target / (duration / 16);
+
+            function updateCounter() {
+
+                current += increment;
+
+                if (current < target) {
+
+                    counter.textContent = Math.floor(current);
+
+                    requestAnimationFrame(updateCounter);
+
+                } else {
+
+                    counter.textContent = target + "+";
+
+                }
+
+            }
+
+            updateCounter();
+
+            counterObserver.unobserve(counter);
+
+        });
+
+    }, {
+
+        threshold: 0.5
+
+    });
+
+    counters.forEach(counter => {
+
+        counterObserver.observe(counter);
+
+    });
+
+    /* ==========================================
+       SCROLL PROGRESS BAR
+    ========================================== */
+
+    const progressBar = document.getElementById("progress-bar");
+
+    function updateProgressBar() {
+
+        if (!progressBar) return;
+
+        const scrollTop = window.scrollY;
+
+        const docHeight =
+            document.documentElement.scrollHeight -
+            window.innerHeight;
 
         const progress =
-        (window.scrollY / totalHeight) * 100;
+            (scrollTop / docHeight) * 100;
 
         progressBar.style.width = progress + "%";
 
     }
 
+    updateProgressBar();
+
+    window.addEventListener("scroll", updateProgressBar);
+
+    /* ==========================================
+       TESTIMONIAL AUTO SLIDER
+    ========================================== */
+
+    const testimonialGrid =
+        document.querySelector(".testimonial-grid");
+
+    if (testimonialGrid) {
+
+        let scrollAmount = 0;
+
+        setInterval(() => {
+
+            const card =
+                testimonialGrid.querySelector(".testimonial-card");
+
+            if (!card) return;
+
+            scrollAmount += card.offsetWidth + 30;
+
+            if (
+                scrollAmount >=
+                testimonialGrid.scrollWidth -
+                testimonialGrid.clientWidth
+            ) {
+
+                scrollAmount = 0;
+
+            }
+
+            testimonialGrid.scrollTo({
+
+                left: scrollAmount,
+
+                behavior: "smooth"
+
+            });
+
+        }, 4000);
+
+    }
+
+    /* ==========================================
+       PORTFOLIO FILTER
+    ========================================== */
+
+    const filterButtons =
+        document.querySelectorAll(".filter-btn");
+
+    const projects =
+        document.querySelectorAll(".project");
+
+    filterButtons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            filterButtons.forEach(btn =>
+                btn.classList.remove("active")
+            );
+
+            button.classList.add("active");
+
+            const filter = button.dataset.filter;
+
+            projects.forEach(project => {
+
+                if (
+                    filter === "all" ||
+                    project.dataset.category === filter
+                ) {
+
+                    project.style.display = "block";
+
+                } else {
+
+                    project.style.display = "none";
+
+                }
+
+            });
+
+        });
+
+    });
+
+    /* ==========================================
+       NUMBER COUNT FORMAT
+    ========================================== */
+
+    document.querySelectorAll(".counter").forEach(counter => {
+
+        if (!counter.dataset.target) {
+
+            counter.dataset.target =
+                counter.textContent.replace(/\D/g, "");
+
+        }
+
+    });
+       /* ==========================================
+       CONTACT FORM VALIDATION
+    ========================================== */
+
+    const contactForm = document.querySelector(".contact-form form");
+
+    if (contactForm) {
+
+        contactForm.addEventListener("submit", (e) => {
+
+            e.preventDefault();
+
+            const name =
+                contactForm.querySelector("input[type='text']");
+
+            const email =
+                contactForm.querySelector("input[type='email']");
+
+            const phone =
+                contactForm.querySelector("input[type='tel']");
+
+            const message =
+                contactForm.querySelector("textarea");
+
+            if (!name.value.trim()) {
+
+                alert("Please enter your name.");
+                name.focus();
+                return;
+
+            }
+
+            if (!email.value.trim()) {
+
+                alert("Please enter your email.");
+                email.focus();
+                return;
+
+            }
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(email.value)) {
+
+                alert("Please enter a valid email address.");
+                email.focus();
+                return;
+
+            }
+
+            if (!phone.value.trim()) {
+
+                alert("Please enter your phone number.");
+                phone.focus();
+                return;
+
+            }
+
+            if (message.value.trim().length < 10) {
+
+                alert("Message must contain at least 10 characters.");
+                message.focus();
+                return;
+
+            }
+
+            alert("Thank you! Your message has been sent.");
+
+            contactForm.reset();
+
+        });
+
+    }
+
+    /* ==========================================
+       HERO TYPING EFFECT
+    ========================================== */
+
+    const typingElement = document.querySelector(".typing");
+
+    if (typingElement) {
+
+        const words = [
+
+            "Website Development",
+            "Meta Ads",
+            "Google Ads",
+            "SEO",
+            "AI Automation"
+
+        ];
+
+        let wordIndex = 0;
+        let charIndex = 0;
+        let deleting = false;
+
+        function typingEffect() {
+
+            const currentWord = words[wordIndex];
+
+            if (!deleting) {
+
+                typingElement.textContent =
+                    currentWord.substring(0, charIndex++);
+
+                if (charIndex > currentWord.length) {
+
+                    deleting = true;
+
+                    setTimeout(typingEffect, 1500);
+
+                    return;
+
+                }
+
+            } else {
+
+                typingElement.textContent =
+                    currentWord.substring(0, charIndex--);
+
+                if (charIndex < 0) {
+
+                    deleting = false;
+
+                    wordIndex = (wordIndex + 1) % words.length;
+
+                }
+
+            }
+
+            setTimeout(
+                typingEffect,
+                deleting ? 50 : 90
+            );
+
+        }
+
+        typingEffect();
+
+    }
+
+    /* ==========================================
+       RIPPLE BUTTON EFFECT
+    ========================================== */
+
+    document.querySelectorAll(".btn1,.btn2").forEach(button => {
+
+        button.addEventListener("click", function (e) {
+
+            const ripple = document.createElement("span");
+
+            ripple.className = "ripple";
+
+            const rect = this.getBoundingClientRect();
+
+            const size = Math.max(rect.width, rect.height);
+
+            ripple.style.width = size + "px";
+            ripple.style.height = size + "px";
+
+            ripple.style.left =
+                (e.clientX - rect.left - size / 2) + "px";
+
+            ripple.style.top =
+                (e.clientY - rect.top - size / 2) + "px";
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+
+                ripple.remove();
+
+            }, 600);
+
+        });
+
+    });
+
+    /* ==========================================
+       IMAGE LAZY LOADING
+    ========================================== */
+
+    const images = document.querySelectorAll("img");
+
+    const imageObserver = new IntersectionObserver((entries) => {
+
+        entries.forEach(entry => {
+
+            if (!entry.isIntersecting) return;
+
+            const img = entry.target;
+
+            if (img.dataset.src) {
+
+                img.src = img.dataset.src;
+
+            }
+
+            imageObserver.unobserve(img);
+
+        });
+
+    });
+
+    images.forEach(img => {
+
+        imageObserver.observe(img);
+
+    });
+
+    /* ==========================================
+       CONSOLE MESSAGE
+    ========================================== */
+
+    console.log(
+
+        "%cZOVRO TECH",
+
+        "color:#0A84FF;font-size:28px;font-weight:bold;"
+
+    );
+
+    console.log(
+
+        "%cProfessional Digital Agency",
+
+        "color:#38BDF8;font-size:14px;"
+
+    );
+       /* ==========================================
+       AUTO UPDATE FOOTER YEAR
+    ========================================== */
+
+    const yearElement = document.querySelector(".year");
+
+    if (yearElement) {
+
+        yearElement.textContent = new Date().getFullYear();
+
+    }
+
+    /* ==========================================
+       PREVENT FORM RESUBMIT
+    ========================================== */
+
+    if (window.history.replaceState) {
+
+        window.history.replaceState(
+
+            null,
+
+            null,
+
+            window.location.href
+
+        );
+
+    }
+
+    /* ==========================================
+       PAGE VISIBILITY
+    ========================================== */
+
+    document.addEventListener("visibilitychange", () => {
+
+        if (document.hidden) {
+
+            document.title = "👋 Come Back | ZOVRO TECH";
+
+        } else {
+
+            document.title =
+                "ZOVRO TECH | Website Development | Meta Ads | Google Ads";
+
+        }
+
+    });
+
+    /* ==========================================
+       KEYBOARD SHORTCUTS
+    ========================================== */
+
+    document.addEventListener("keydown", (e) => {
+
+        if (e.key === "Escape") {
+
+            if (navLinks && menuBtn) {
+
+                navLinks.classList.remove("active");
+                menuBtn.classList.remove("active");
+
+            }
+
+        }
+
+    });
+
+    /* ==========================================
+       RESIZE HANDLER
+    ========================================== */
+
+    window.addEventListener("resize", () => {
+
+        if (window.innerWidth > 992) {
+
+            if (navLinks && menuBtn) {
+
+                navLinks.classList.remove("active");
+                menuBtn.classList.remove("active");
+
+            }
+
+        }
+
+    });
+
+    /* ==========================================
+       WEBSITE READY
+    ========================================== */
+
+    window.addEventListener("load", () => {
+
+        console.log("🚀 Website Loaded Successfully");
+
+        console.log("⚡ ZOVRO TECH Premium Version");
+
+    });
+
+}); // DOMContentLoaded End
+
+
+/* =====================================================
+   ZOVRO TECH
+   PART 7 (OPTIONAL PREMIUM FEATURES)
+===================================================== */
+
+/* ==========================================
+   PRELOADER FADE OUT
+========================================== */
+
+window.addEventListener("load", () => {
+
+    const loader = document.getElementById("loader");
+
+    if (loader) {
+
+        loader.style.opacity = "0";
+
+        setTimeout(() => {
+
+            loader.style.display = "none";
+
+        }, 500);
+
+    }
+
 });
 
-/* ===========================
-   WHATSAPP BUTTON
-=========================== */
+/* ==========================================
+   COPY EMAIL TO CLIPBOARD
+========================================== */
 
-const whatsapp = document.querySelector(".whatsapp");
+const emailLink = document.querySelector(".copy-email");
 
-if(whatsapp){
+if (emailLink) {
 
-    whatsapp.addEventListener("click", () => {
+    emailLink.addEventListener("click", (e) => {
 
-        window.open(
-        "https://wa.me/91XXXXXXXXXX",
-        "_blank"
-        );
+        e.preventDefault();
+
+        const email = emailLink.dataset.email;
+
+        navigator.clipboard.writeText(email);
+
+        alert("Email copied successfully.");
 
     });
 
 }
 
-/* ===========================
-   STATS COUNTER
-=========================== */
+/* ==========================================
+   BUTTON LOADING EFFECT
+========================================== */
 
-const observer = new IntersectionObserver(entries=>{
+document.querySelectorAll(".btn-loading").forEach(button => {
 
-entries.forEach(entry=>{
+    button.addEventListener("click", function () {
 
-if(entry.isIntersecting){
+        this.classList.add("loading");
 
-const counter = entry.target;
+        setTimeout(() => {
 
-const target = +counter.dataset.target;
+            this.classList.remove("loading");
 
-let count = 0;
+        }, 2000);
 
-const speed = target / 80;
-
-const update = ()=>{
-
-count += speed;
-
-if(count < target){
-
-counter.innerHTML = Math.floor(count);
-
-requestAnimationFrame(update);
-
-}else{
-
-counter.innerHTML = target + "+";
-
-}
-
-};
-
-update();
-
-observer.unobserve(counter);
-
-}
+    });
 
 });
 
-});
+/* ==========================================
+   SCROLL DIRECTION
+========================================== */
 
-document.querySelectorAll(".counter").forEach(counter=>{
+let lastScroll = 0;
 
-observer.observe(counter);
+window.addEventListener("scroll", () => {
 
-});
+    const current = window.pageYOffset;
 
-/* ===========================
-   IMAGE LAZY LOAD
-=========================== */
+    if (current > lastScroll) {
 
-const images = document.querySelectorAll("img");
+        document.body.classList.add("scroll-down");
+        document.body.classList.remove("scroll-up");
 
-const imageObserver = new IntersectionObserver(entries=>{
+    } else {
 
-entries.forEach(entry=>{
+        document.body.classList.add("scroll-up");
+        document.body.classList.remove("scroll-down");
 
-if(entry.isIntersecting){
+    }
 
-const img = entry.target;
-
-img.src = img.dataset.src || img.src;
-
-imageObserver.unobserve(img);
-
-}
+    lastScroll = current;
 
 });
 
-});
+/* ==========================================
+   NETWORK STATUS
+========================================== */
 
-images.forEach(img=>{
+window.addEventListener("offline", () => {
 
-imageObserver.observe(img);
-
-});
-
-/* ===========================
-   DISABLE RIGHT CLICK
-=========================== */
-
-document.addEventListener("contextmenu",e=>{
-
-e.preventDefault();
+    console.warn("No Internet Connection");
 
 });
 
-/* ===========================
-   DISABLE F12
-=========================== */
+window.addEventListener("online", () => {
 
-document.addEventListener("keydown",e=>{
-
-if(
-
-e.key==="F12" ||
-
-(e.ctrlKey && e.shiftKey && e.key==="I") ||
-
-(e.ctrlKey && e.shiftKey && e.key==="J") ||
-
-(e.ctrlKey && e.key==="U")
-
-){
-
-e.preventDefault();
-
-}
+    console.log("Internet Connected");
 
 });
 
-/* ===========================
-   CONSOLE MESSAGE
-=========================== */
+/* ==========================================
+   PAGE PERFORMANCE
+========================================== */
 
-console.log("%cZOVRO TECH",
-"color:#0A84FF;font-size:28px;font-weight:bold;");
+window.addEventListener("load", () => {
 
-console.log("%cWebsite Developed by ZOVRO TECH",
-"color:#38BDF8;font-size:14px;");
+    const time = performance.now().toFixed(0);
 
-/* ===========================
-   WEBSITE READY
-=========================== */
+    console.log(
 
-window.addEventListener("load",()=>{
+        `⚡ Page Loaded in ${time} ms`
 
-console.log("Website Loaded Successfully 🚀");
+    );
 
 });
-// Close DOMContentLoaded
-});
+
+/* ==========================================
+   END
+========================================== */
+
+console.log("✅ ZOVRO TECH Premium JavaScript Loaded");
