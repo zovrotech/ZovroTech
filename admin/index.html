@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZOVRO TECH — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="bg"></div>
+<section id="loginView" class="auth">
+ <div class="auth-card">
+  <div class="logo"><span>ZOVRO</span><b>TECH</b></div>
+  <div class="kicker">ADMIN CONTROL</div>
+  <h1>Welcome back.</h1>
+  <p>Manage website enquiries from one live dashboard.</p>
+  <form id="loginForm">
+   <input id="username" autocomplete="username" placeholder="Username" required>
+   <input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
+   <button type="submit">Sign in <span>→</span></button>
+   <div id="loginMsg"></div>
+  </form>
+  <small class="security-note">For production, use Supabase Auth/RLS for private lead access. The username/password gate is not a substitute for server-side authentication.</small>
+ </div>
+</section>
+
+<section id="dashboardView" class="dashboard hidden">
+ <header class="top">
+  <div><div class="logo"><span>ZOVRO</span><b>TECH</b></div><small>LIVE LEAD CONTROL</small></div>
+  <div class="top-actions"><span>Admin</span><button id="logout">Logout</button></div>
+ </header>
+ <main>
+  <div class="dash-head"><div><div class="kicker">OVERVIEW</div><h1>Lead dashboard</h1><p>Live enquiries stored in Supabase.</p></div><button id="refresh">↻ Refresh</button></div>
+  <div class="stats">
+   <div><span>Total leads</span><strong id="total">0</strong></div>
+   <div><span>New</span><strong id="newCount">0</strong></div>
+   <div><span>Contacted</span><strong id="contacted">0</strong></div>
+   <div><span>Converted</span><strong id="converted">0</strong></div>
+  </div>
+  <div class="toolbar"><input id="search" placeholder="Search name, email, phone or message..."><select id="filter"><option>All</option><option>New</option><option>Contacted</option><option>Converted</option></select></div>
+  <div class="table-wrap"><table><thead><tr><th>Lead</th><th>Contact</th><th>Plan</th><th>Message</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div>
+ </main>
+</section>
+
+<div id="modal" class="modal hidden"><div class="modal-card"><button id="closeModal" class="close">×</button><div class="kicker">LEAD DETAILS</div><h2 id="mName"></h2><div id="mBody"></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/supabase-config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
