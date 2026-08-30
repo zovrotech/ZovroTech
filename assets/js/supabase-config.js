@@ -1,2 +1,0 @@
-window.ZOVRO_SUPABASE_URL = "https://cgwosspbrvqffmixvaza.supabase.co";
-window.ZOVRO_SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI6ImNnd29zc3BicnZxZmZtaXh2YXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzQxNjMsImV4cCI6MjEwMjAxMDE2M30.VotRvLtnbtPy8-fQaQnHNzkjOHNAXN8I31HzjPMXXbc";
